@@ -1,0 +1,10 @@
+const path = require('path');
+
+const postgresPath = `lib/storage/postgres`.split('/');
+
+module.exports = {
+    config: path.resolve(...postgresPath, `config.js`),
+    'models-path': path.resolve(...postgresPath, 'models'),
+    'seeders-path': path.resolve(...postgresPath, 'seeders'),
+    'migrations-path': path.resolve(...postgresPath, 'migrations'),
+};
