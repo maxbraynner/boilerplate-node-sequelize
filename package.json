@@ -10,7 +10,8 @@
     "migrate": "npm run build && node_modules/.bin/sequelize db:migrate",
     "seed": "npm run build && node_modules/.bin/sequelize db:seed:all",
     "seed:undo": "npm run build && node_modules/.bin/sequelize db:seed:undo:all",
-    "postinstall": "npm run migrate"
+    "postinstall": "test -n \"$NO_YARN_POSTINSTALL\" || yarn run migrate",
+    "prune": "node yarn-prune.js"
   },  
   "main": "lib/index.js",
   "dependencies": {
