@@ -1,7 +1,5 @@
 FROM node:8-alpine
 
-ARG NO_RUN_MIGRATION
-
 # Create app directory
 WORKDIR /usr/src/app
 
