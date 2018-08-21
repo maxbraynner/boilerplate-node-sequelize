@@ -16,13 +16,12 @@ COPY . .
 
 ENV NODE_ENV=production
 
-# development: just run build
-# prudction: build, migrations and prune devdependencies
-RUN if test -n "$NO_RUN_MIGRATION"; then yarn build; else yarn migrate && yarn run prune && yarn cache clean --force; fi
+# build and prune devdependencies
+RUN yarn build && yarn run prune && yarn cache clean --force
 
 # default to port 4000 for node, and 9229 for debug
 ARG PORT=4000
 ENV PORT $PORT
 EXPOSE $PORT 9229
 
-CMD yarn start
+CMD yarn db:start && yarn start

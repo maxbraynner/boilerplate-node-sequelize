@@ -1,16 +1,18 @@
 {
   "name": "boilerplate-node-sequelize",
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
-    "build": "node node_modules/.bin/gulp",
+    "start": "node lib/index.js",
+    "db:start": "npm run sequelize db:migrate && npm run sequelize db:seed:all",
     "start:dev": "node --inspect=0.0.0.0:9229 -r ts-node/register src/index.ts",
     "dev": "./node_modules/nodemon/bin/nodemon.js",
-    "start": "node lib/index.js",
+    "lint": "tslint --project tsconfig.json",
+    "build": "node node_modules/.bin/gulp",
     "test": "rm -rf ./test/reports && mocha --recursive --timeout 15000 -r ts-node/register test/app/**/*.ts --reporter mochawesome --reporter-options reportDir=./test/reports/,reportFilename=tests-result || exit 0",
     "migrate": "npm run build && node_modules/.bin/sequelize db:migrate",
     "seed": "npm run build && node_modules/.bin/sequelize db:seed:all",
     "seed:undo": "npm run build && node_modules/.bin/sequelize db:seed:undo:all",
     "postinstall": "test -n \"$NO_YARN_POSTINSTALL\" || yarn run migrate",
+    "sequelize": "./node_modules/.bin/sequelize",
     "prune": "node yarn-prune.js"
   },  
   "main": "lib/index.js",
