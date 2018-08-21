@@ -5,14 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Attach 9229 --inspect",
             "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/lib/config/server.js",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
-            ]
+            "request": "attach",
+            "protocol": "inspector",
+            "port": 9229,
+            "localRoot": "${workspaceRoot}",
+            "remoteRoot": "/usr/src/app"
         }
     ]
 }
