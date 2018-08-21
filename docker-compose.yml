@@ -28,15 +28,21 @@ services:
         - NO_RUN_MIGRATION= 1
     volumes: 
       - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./yarn.lock:/usr/src/app/yarn.lock.json
+      - notused:/opt/app/node_modules
     environment: 
       - NODE_ENV=development
       - POSTGRES_URL=postgres://postgres:123@database:5432/dbname
     ports: 
       - 4000:4000
-    command: yarn dev & yarn migrate
+      - 9229:9229
+    command: yarn dev
     depends_on:
       - database
 
 volumes:
   pgdata:
   pgadmin:
+  notused:

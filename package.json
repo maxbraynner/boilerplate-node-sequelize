@@ -3,7 +3,7 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "node node_modules/.bin/gulp",
-    "start:dev": "node --inspect=9229 -r ts-node/register src/index.ts",
+    "start:dev": "node --inspect=0.0.0.0:9229 -r ts-node/register src/index.ts",
     "dev": "./node_modules/nodemon/bin/nodemon.js",
     "start": "node lib/index.js",
     "test": "rm -rf ./test/reports && mocha --recursive --timeout 15000 -r ts-node/register test/app/**/*.ts --reporter mochawesome --reporter-options reportDir=./test/reports/,reportFilename=tests-result || exit 0",
