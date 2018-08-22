@@ -25,7 +25,6 @@ services:
     volumes: 
       - ./src:/usr/src/app/src
       - ./package.json:/usr/src/app/package.json
-      - ./package-lock.json:/usr/src/app/package-lock.json
       - ./yarn.lock:/usr/src/app/yarn.lock.json
       - notused:/opt/app/node_modules
     environment: 
