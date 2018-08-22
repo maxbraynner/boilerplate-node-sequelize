@@ -18,14 +18,10 @@ services:
       - 9000:80
     volumes: 
       - pgadmin:/var/lib/pgadmin
-    depends_on: 
-      - database
 
   app:
     build:
       context: .
-      args: 
-        - NO_RUN_MIGRATION= 1
     volumes: 
       - ./src:/usr/src/app/src
       - ./package.json:/usr/src/app/package.json
