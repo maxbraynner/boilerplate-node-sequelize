@@ -17,6 +17,9 @@ ENV NODE_ENV=production
 # build and prune devdependencies
 RUN yarn run build && yarn run prune && yarn cache clean --force
 
+# check every 30s to ensure this service returns HTTP 200
+HEALTHCHECK --interval=30s CMD node healthcheck.js
+
 # default to port 4000 for node, and 9229 for debug
 ARG PORT=4000
 ENV PORT $PORT
