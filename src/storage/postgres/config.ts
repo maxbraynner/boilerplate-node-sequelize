@@ -1,14 +1,9 @@
 'use strict';
 
-const env = process.env.NODE_ENV || 'development';
-
-// Required to enable migrations in development
-if (env === 'development') {
-    // eslint-disable-next-line
-    require('dotenv').config();
-}
-
+require('dotenv').config();
 const operatorsAliases = require('./operators');
+
+const env = process.env.NODE_ENV || 'development';
 
 const defaultConfig = {
     operatorsAliases,
