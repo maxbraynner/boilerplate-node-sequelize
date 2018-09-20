@@ -8,8 +8,10 @@ import * as Sequelize from 'sequelize'
 export interface UserAttribute {
     id: string
     nome: string
+    email: string
+    status: string
     scope: {
-        admin: boolean,
+        admin: boolean
         user: boolean
     }
 }
@@ -44,16 +46,22 @@ class User {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
+            email: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: true,
+            },
+            status: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
             createdAt: Sequelize.DATE,
             updatedAt: Sequelize.DATE,
-        }
-        );
+        });
         return this.model;
     }
 
-    public associate(models) {
-        
-    }
+    // public associate(models) {}
 }
 
 export default new User();
