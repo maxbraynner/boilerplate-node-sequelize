@@ -2,15 +2,22 @@
 
 import * as Joi from 'joi';
 import * as validate from "express-validation";
-import { JoiState, JoiDocument } from '../../config/joiExtensions';
+import { Scope } from '../../enums/scope';
 
 export const userSchemas = {
     create: {
+        email: Joi.string().required(),
         nome: Joi.string().required(),
-        cpf: JoiDocument.document().cpf().required()
+        status: Joi.number().valid(0, 1).required(),
+        scope: Joi.string().valid(Scope.USER, Scope.ADMIN).required(),
+        senha: Joi.string().required(),
     },
     change: {
+        email: Joi.string().forbidden(),
         nome: Joi.string().required(),
+        status: Joi.number().valid(0, 1).required(),
+        scope: Joi.string().valid(Scope.USER, Scope.ADMIN).required(),
+        senha: Joi.string().optional(),
     }
 }
 
@@ -28,17 +35,6 @@ class UserValidator {
     change() {
         const model = {
             body: userSchemas.change
-        }
-
-        // retorna o middleware de validação
-        return validate(model);
-    }
-
-    cpf() {
-        const model = {
-            params: {
-                cpf: JoiDocument.document().cpf().required()
-            }
         }
 
         // retorna o middleware de validação

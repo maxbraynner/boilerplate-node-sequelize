@@ -3,11 +3,11 @@
 import * as admin from "firebase-admin";
 import { Request, Response } from "express";
 import * as Boom from 'boom';
-import { ForeignKeyConstraintError } from 'sequelize'
 import { AuthRequest } from "../../interfaces";
-import enums from "../../enums";
 import { db as postgres } from "../../storage/postgres";
 import { UserModel } from "../../storage/postgres/models/user.model";
+import { Scope } from "../../enums/scope";
+import UserFilter from "../../interfaces/filters/user.filter";
 
 class UsersController {
 
@@ -23,54 +23,137 @@ class UsersController {
      * @param res 
      */
     async create(req: AuthRequest, res: Response) {
-        const { body, credentials } = req;
+        let user = req.body;
+        try {
+            const firebaseUser = await admin.auth().createUser({
+                email: user.email,
+                password: user['senha'],
+                disabled: user['status'] === 0 ? true : false
+            });
 
-        // remove mascara do cpf
-        body.cpf = body.cpf.replace(/\D/g, '');
+            user.id = firebaseUser.uid;
+            user = await this.userModel.create(user);
+            await admin.auth().setCustomUserClaims(firebaseUser.uid, { scope: user.scope });
 
-        body.id = credentials.uid;
-        body.scope = {
-            user: true,
-            admin: false,
+            res.json(user);
+        } catch (error) {
+            if (error.code === "auth/email-already-exists") {
+                throw Boom.conflict('Usuário já existe');
+            }
+
+            if (error.code === "auth/invalid-password") {
+                throw Boom.badRequest(error.message);
+            }
+
+            if (user && user.id) {
+                await admin.auth().deleteUser(user.id);
+            }
+            throw error;
         }
-
-        const user = await this.userModel.create(body);
-
-        await admin.auth().setCustomUserClaims(credentials.uid, { scope: body.scope });
-
-        res.json({ user });
     }
 
-    async perfil(req: AuthRequest, res: Response) {
-        const user = await this.userModel.findById(req.credentials.uid, {
+    async findById(req: AuthRequest, res: Response) {
+        const uid = req.params.id;
+
+        const user = await this.userModel.findById(uid, {
             rejectOnEmpty: true
         });
 
         res.json(user);
     }
 
-    async update(req: AuthRequest, res: Response) {
-        const newUser = {
-            nome: req.body.nome,
-            crm: req.body.crm,
-            estado: req.body.estado
-        };
+    async profile(req: AuthRequest, res: Response) {
+        const uid = req.credentials.uid;
 
-        const user = await this.userModel.update(newUser, {
-            where: { id: req.credentials.uid },
-            returning: true
+        const user = await this.userModel.findById(uid, {
+            rejectOnEmpty: true,
         });
 
-        res.json({ data: user[1] })
+        res.json(user);
     }
-    
-    async isCpfAvailable(req: Request, res: Response) {
-        let cpf = req.params.cpf;
-        cpf = cpf.replace(/\D/g, "");
 
-        const count = await this.userModel.count({ where: { cpf } });
+    async find(req: AuthRequest, res: Response) {
+        const filter: UserFilter = req.query;
 
-        res.status(count === 0 ? 200 : 409).json({ cpf });
+        const where = {};
+
+        if (filter.nome) {
+            where["nome"] = {
+                $like: filter.nome
+            };
+        }
+
+        if (filter.email) {
+            where["email"] = filter.email;
+        }
+
+        if (filter.scope) {
+            where["scope"] = filter.scope;
+        }
+
+        const users = await this.userModel.findAndCount({
+            where,
+            order: [['updatedAt', 'DESC']]
+        });
+
+        res.json({ data: users });
+    }
+
+    async update(req: AuthRequest, res: Response) {
+        const uid = req.params.id;
+        const newUser = req.body;
+
+        let user = await this.userModel.findById(uid, {
+            rejectOnEmpty: true
+        })
+
+        const toUpdateFirebase = {
+            disabled: newUser.status === 0 ? true : false
+        };
+
+        if (newUser.senha) {
+            toUpdateFirebase["password"] = newUser.senha;
+        }
+
+        await admin.auth().updateUser(uid, toUpdateFirebase);
+        await admin.auth().setCustomUserClaims(uid, { scope: newUser.scope });
+
+        user = await user.update(newUser);
+
+        res.json({ data: user })
+    }
+
+    async delete(req: AuthRequest, res: Response) {
+        const userId = req.params.id;
+
+        const user = await this.userModel.find({
+            where: {
+                id: userId
+            },
+            rejectOnEmpty: true
+        })
+
+        await user.destroy();
+
+        await admin.auth().deleteUser(userId);
+
+        res.json({ data: user })
+    }
+
+    async createAdmin(req: Request, res: Response) {
+        const uid = req.params.uid;
+        const auth = req.headers.authorization;
+
+        if (auth !== process.env.ADMIN_TOKEN) {
+            throw Boom.unauthorized();
+        }
+
+        await admin.auth().setCustomUserClaims(uid, { scope: Scope.ADMIN });
+
+        res.json({
+            uid,
+            scope: Scope.ADMIN
+        })
     }
 
     async isEmailAvailable(req: Request, res: Response) {

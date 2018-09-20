@@ -13,32 +13,42 @@ const router = Router();
 /**
  * restrict routers
  */
-
-// this endpoint do not need a scope
-router.post('/', UserValidator().create(), Auth(),
+router.post('/', Auth(Scope.ADMIN), UserValidator().create(),
     (req: AuthRequest, res, next) => {
         UserController().create(req, res).catch(next);
     });
 
-router.get('/', Auth(Scope.USER),
+router.get('/:id', Auth(Scope.ADMIN),
     (req: AuthRequest, res, next) => {
-        UserController().perfil(req, res).catch(next);
+        UserController().findById(req, res).catch(next);
     });
 
-router.put('/', UserValidator().change(), Auth(Scope.USER),
+router.get('/', Auth(Scope.ADMIN),
+    (req: AuthRequest, res, next) => {
+        UserController().find(req, res).catch(next);
+    });
+
+router.get('/get/profile', Auth(),
+    (req: AuthRequest, res, next) => {
+        UserController().profile(req, res).catch(next);
+    });
+
+router.put('/:id', Auth(Scope.ADMIN), UserValidator().change(),
     (req: AuthRequest, res, next) => {
         UserController().update(req, res).catch(next);
     });
 
-/**
- * public routers
- */
-router.get('/cpf/:cpf', UserValidator().cpf(),
-    (req, res, next) => {
-        UserController().isCpfAvailable(req, res).catch(next);
+router.delete('/:id', Auth(Scope.ADMIN),
+    (req: AuthRequest, res, next) => {
+        UserController().delete(req, res).catch(next);
     });
 
-router.get('/email/:email',
+router.put('/admin/:uid',
+    (req: AuthRequest, res, next) => {
+        UserController().createAdmin(req, res).catch(next);
+    });
+
+router.get('/email/:email', Auth(Scope.ADMIN),
     (req, res, next) => {
         UserController().isEmailAvailable(req, res).catch(next);
     });
