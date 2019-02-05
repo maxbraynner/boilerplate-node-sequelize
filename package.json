@@ -3,21 +3,22 @@
   "scripts": {
     "sequelize": "./node_modules/.bin/sequelize",
     "db:start": "npm run sequelize db:migrate && npm run sequelize db:seed:all",
-    "db:undo": "npm run sequelize db:seed:undo:all && npm run sequelize db:migrate:undo:all",
+    "db:migrate": "npm run build && npm run sequelize db:migrate",
+    "db:seed": "npm run build && npm run sequelize db:seed:all",
+    "db:undo": "npm run build && npm run sequelize db:seed:undo:all && npm run sequelize db:migrate:undo:all",
     "db:reset": "npm run build && npm run db:undo && npm run db:start",
     "start": "npm run db:start && node lib/index.js",
     "start:debug": "node --inspect=0.0.0.0:9229 -r ts-node/register src/index.ts",
     "start:dev": "./node_modules/nodemon/bin/nodemon.js",
     "lint": "tslint --project tsconfig.json",
     "build": "node node_modules/.bin/gulp",
-    "migrate": "npm run build && npm run sequelize db:migrate",
     "prune": "node yarn-prune.js",
     "postinstall": "test -n \"$NO_YARN_POSTINSTALL\" || npm run build",
     "test": "rm -rf ./test/reports && mocha --recursive --timeout 15000 -r ts-node/register test/app/**/*.ts --reporter mochawesome --reporter-options reportDir=./test/reports/,reportFilename=tests-result || exit 0"
   },
   "main": "lib/index.js",
   "engines": {
-    "node": ">=8.9.3"
+    "node": "=8"
   },
   "nodemonConfig": {
     "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
