@@ -7,30 +7,30 @@ const tsProject = ts.createProject('tsconfig.json');
 /**
  * copy assets to lib folder
  */
-gulp.task('copy', ['build'], () => {
+function copy() {
     return gulp.src(['./src/**/*', '!./**/*.ts'])
         .pipe(gulp.dest('lib'));
-})
+}
 
 /**
  * build typescript
  */
-gulp.task('build', ['clean'], () => {
+function build() {
     return tsProject
         .src()
         .pipe(tsProject())
         .pipe(gulp.dest('lib'));
-});
+}
 
 /**
  * clean the lib folder
  */
-gulp.task('clean', () => {
+function cleanBuild() {
     return gulp
-        .src('lib/')
+        .src('lib/', { allowEmpty: true })
         .pipe(clean({
             force: true
         }));
-});
+}
 
-gulp.task('default', ['copy']);
+gulp.task('default', gulp.series(cleanBuild, build, copy));
