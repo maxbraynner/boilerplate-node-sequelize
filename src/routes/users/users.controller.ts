@@ -9,12 +9,9 @@ import { UserModel } from "../../storage/postgres/models/user.model";
 import { Scope } from "../../enums/scope";
 import UserFilter from "../../interfaces/filters/user.filter";
 
-class UsersController {
+class UserController {
 
-    private userModel: UserModel;
-
-    constructor() {
-        this.userModel = postgres.models.user;
+    constructor(private userModel: UserModel) {
     }
 
     /**
@@ -183,8 +180,8 @@ class UsersController {
     }
 }
 
-function init(): UsersController {
-    return new UsersController();
+function init(): UserController {
+    return new UserController(postgres.models.user);
 }
 
 export default init;
