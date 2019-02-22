@@ -1,14 +1,15 @@
 import { Request } from "express";
+import { auth } from "firebase-admin";
+
+interface Credentials extends auth.DecodedIdToken {
+    scope?: {
+        user: boolean
+        admin: boolean
+    }
+}
 
 interface AuthRequest extends Request {
-    credentials: {
-        uid: string,
-        email: string
-        scope: {
-            user: boolean
-            admin: boolean
-        }
-    }
+    credentials: Credentials
 }
 
 export default AuthRequest;
