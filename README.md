@@ -1,4 +1,4 @@
-<a href="https://david-dm.org/maxbraynner/boilerplate-node-sequelize">
+<a href="https://david-dm.org/maxbraynner/boilerplate-node-sequelize" target="_blank">
     <img src="https://david-dm.org/maxbraynner/boilerplate-node-sequelize.svg" alt="Dependency Status" />
 </a>
 
