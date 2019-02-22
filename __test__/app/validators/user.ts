@@ -4,8 +4,7 @@ import * as chai from 'chai';
 import 'mocha';
 import * as Joi from 'joi';
 import {userSchemas} from '../../../src/routes/users/users.validator';
-import faker from 'faker';
-
+import * as faker from 'faker';
 
 const { expect } = chai;
 

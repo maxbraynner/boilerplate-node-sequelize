@@ -14,7 +14,7 @@
     "build": "node node_modules/.bin/gulp default",
     "prune": "node yarn-prune.js",
     "postinstall": "test -n \"$NO_YARN_POSTINSTALL\" || npm run build",
-    "test": "rm -rf ./test/reports && mocha --recursive --timeout 15000 -r ts-node/register test/app/**/*.ts --reporter mochawesome --reporter-options reportDir=./test/reports/,reportFilename=tests-result || exit 0"
+    "test": "rm -rf ./__test__/reports && mocha --recursive --timeout 15000 -r ts-node/register __test__/app/**/*.ts --reporter mochawesome --reporter-options reportDir=./__test__/reports/,reportFilename=tests-result || exit 0"
   },
   "main": "lib/index.js",
   "engines": {
