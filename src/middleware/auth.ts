@@ -32,7 +32,7 @@ class Auth {
 
             const bearer = authorization.split('Bearer ');
 
-            const decodedToken: any = await admin.auth().verifyIdToken((bearer[1] || bearer[0]).trim());
+            const decodedToken = await admin.auth().verifyIdToken((bearer[1] || bearer[0]).trim());
 
             if (this.scopes.length) {
                 this.checkScope(this.scopes, decodedToken.scope);
@@ -45,25 +45,6 @@ class Auth {
             next(error.isBoom ? error : Boom.forbidden('invalid token'));
         }
     };
-
-    /**
-     * Express middleware for test
-     * @param req 
-     * @param res 
-     * @param next 
-     */
-    private authTest(req: AuthRequest, res: Response, next: NextFunction) {
-        req.credentials = {
-            uid: process.env.TEST_USER_UID,
-            email: process.env.TEST_USER_EMAIL,
-            scope: {
-                user: true,
-                admin: true
-            }
-        };
-
-        next();
-    }
 
     /**
      * check if user has scope
@@ -85,10 +66,6 @@ class Auth {
     }
 
     get config() {
-        if (process.env.NODE_ENV === 'test') {
-            return this.authTest.bind(this);
-        }
-
         return this.authFirebase.bind(this);
     }
 
