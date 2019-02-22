@@ -6,7 +6,7 @@ import { AuthRequest } from "../../interfaces";
 import { Scope } from "../../enums/scope";
 import UserValidator from "./users.validator"
 import UserController from "./users.controller"
-import Auth from "../auth"
+import Auth from "../../middleware/auth"
 
 const router = Router();
 
