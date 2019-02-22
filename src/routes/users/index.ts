@@ -43,14 +43,15 @@ router.delete('/:id', Auth(Scope.ADMIN),
         UserController().delete(req, res).catch(next);
     });
 
-router.put('/admin/:uid',
-    (req: AuthRequest, res, next) => {
-        UserController().createAdmin(req, res).catch(next);
-    });
-
 router.get('/email/:email', Auth(Scope.ADMIN),
     (req, res, next) => {
         UserController().isEmailAvailable(req, res).catch(next);
+    });
+
+// this route require a token provided by env variable ADMIN_TOKEN
+router.put('/admin/:uid',
+    (req: AuthRequest, res, next) => {
+        UserController().createAdmin(req, res).catch(next);
     });
 
 export default router;
