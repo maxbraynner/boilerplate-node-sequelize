@@ -1,5 +1,6 @@
 /node_modules
 /lib
-/__test__/reports/
+/__tests__/coverage/
+/__tests__/*.sqlite
 .env
 yarn-error.log

@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 import * as admin from "firebase-admin";
 import { Request, Response } from "express";
-import * as Boom from 'boom';
+import * as Boom from "boom";
 import { AuthRequest } from "../../interfaces";
 import { db as postgres } from "../../storage/postgres";
 import { UserModel } from "../../storage/postgres/models/user.model";
@@ -10,32 +10,32 @@ import { Scope } from "../../enums/scope";
 import UserFilter from "../../interfaces/filters/user.filter";
 
 class UserController {
-
-    constructor(private userModel: UserModel) {
-    }
+    constructor(private userModel: UserModel) {}
 
     /**
      * Cria usuário no postgres e adiciona o scope no firebase auth
-     * @param req 
-     * @param res 
+     * @param req
+     * @param res
      */
     async create(req: AuthRequest, res: Response) {
         let user = req.body;
         try {
             const firebaseUser = await admin.auth().createUser({
                 email: user.email,
-                password: user['senha'],
-                disabled: user['status'] === 0 ? true : false
+                password: user["senha"],
+                disabled: user["status"] === 0 ? true : false
             });
 
             user.id = firebaseUser.uid;
             user = await this.userModel.create(user);
-            await admin.auth().setCustomUserClaims(firebaseUser.uid, { scope: user.scope });
+            await admin
+                .auth()
+                .setCustomUserClaims(firebaseUser.uid, { scope: user.scope });
 
             res.json(user);
         } catch (error) {
             if (error.code === "auth/email-already-exists") {
-                throw Boom.conflict('Usuário já existe');
+                throw Boom.conflict("Usuário já existe");
             }
 
             if (error.code === "auth/invalid-password") {
@@ -63,7 +63,7 @@ class UserController {
         const uid = req.credentials.uid;
 
         const user = await this.userModel.findById(uid, {
-            rejectOnEmpty: true,
+            rejectOnEmpty: true
         });
 
         res.json(user);
@@ -90,7 +90,7 @@ class UserController {
 
         const users = await this.userModel.findAndCount({
             where,
-            order: [['updatedAt', 'DESC']]
+            order: [["updatedAt", "DESC"]]
         });
 
         res.json({ data: users });
@@ -102,7 +102,7 @@ class UserController {
 
         let user = await this.userModel.findById(uid, {
             rejectOnEmpty: true
-        })
+        });
 
         const toUpdateFirebase = {
             disabled: newUser.status === 0 ? true : false
@@ -117,7 +117,7 @@ class UserController {
 
         user = await user.update(newUser);
 
-        res.json({ data: user })
+        res.json({ data: user });
     }
 
     async delete(req: AuthRequest, res: Response) {
@@ -128,13 +128,13 @@ class UserController {
                 id: userId
             },
             rejectOnEmpty: true
-        })
+        });
 
         await user.destroy();
 
         await admin.auth().deleteUser(userId);
 
-        res.json({ data: user })
+        res.json({ data: user });
     }
 
     async createAdmin(req: Request, res: Response) {
@@ -150,7 +150,7 @@ class UserController {
         res.json({
             uid,
             scope: Scope.ADMIN
-        })
+        });
     }
 
     async isEmailAvailable(req: Request, res: Response) {
@@ -164,11 +164,11 @@ class UserController {
             isAvailable = false;
         } catch (error) {
             switch (error.code) {
-                case 'auth/user-not-found':
+                case "auth/user-not-found":
                     isAvailable = true;
                     break;
-                case 'auth/invalid-email':
-                    throw Boom.badRequest(error.message)
+                case "auth/invalid-email":
+                    throw Boom.badRequest(error.message);
                     break;
                 default:
                     throw error;

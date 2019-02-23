@@ -14,7 +14,6 @@ const defaultConfig = {
     define: {
         freezeTableName: true,
     },
-
     paginate: {
         default: 10,
         max: 50,
@@ -27,7 +26,12 @@ const sequelizeConfig = {
         benchmark: true,
         // sync: {alter: true},
     },
-    test: defaultConfig,
+    test: {
+        ...defaultConfig,
+        logging: false,
+        dialect: 'sqlite',
+        storage: './__tests__/database.sqlite'
+    },
     production: {
         ...defaultConfig,
         ssl: true,

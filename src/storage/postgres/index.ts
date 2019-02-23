@@ -1,19 +1,22 @@
-'use strict';
+"use strict";
 
-import * as Sequelize from 'sequelize'
-import Models from './models'
-const Config = require('./config');
+import * as Sequelize from "sequelize";
+import Models from "./models";
+const Config = require("./config");
 
 /**
  * db connection instance
  */
-const con = new Sequelize(Config.url, Config);
+const con =
+    process.env.NODE_ENV == "test"
+        ? new Sequelize("database", null, null, Config)
+        : new Sequelize(Config.url, Config);
 
 /**
  * models instances
  */
 const models = {
-    user: Models.user.register(con),
+    user: Models.user.register(con)
 };
 
 const db = {
@@ -42,7 +45,7 @@ const db = {
         // await con.sync({
         //     alter: true,
         // });
-    },
+    }
 };
 
 /**
