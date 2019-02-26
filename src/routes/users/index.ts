@@ -2,11 +2,11 @@
 
 import { Router } from "express";
 
-import AuthRequest from "../../interfaces/authRequest";
-import { Scope } from "../../enums/scope";
+import AuthRequest from "../../interfaces/AuthRequest";
+import { Scope } from "../../enums/Scope";
 import UserValidator from "./users.validator"
 import UserController from "./users.controller"
-import Auth from "../../middleware/auth"
+import Auth from "../../middlewares/auth"
 
 const router = Router();
 

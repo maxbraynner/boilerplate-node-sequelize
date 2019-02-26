@@ -3,11 +3,11 @@
 import * as admin from "firebase-admin";
 import { Request, Response } from "express";
 import * as Boom from "boom";
-import AuthRequest from "../../interfaces/authRequest";
+import AuthRequest from "../../interfaces/AuthRequest";
 import { db as postgres } from "../../storage/postgres";
 import { UserModel } from "../../storage/postgres/models/user.model";
-import { Scope } from "../../enums/scope";
-import UserFilter from "../../interfaces/filters/user.filter";
+import { Scope } from "../../enums/Scope";
+import UserFilter from "./users.filter";
 
 class UserController {
     constructor(private userModel: UserModel) {}

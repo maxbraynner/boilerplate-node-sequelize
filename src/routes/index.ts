@@ -1,7 +1,7 @@
 'use strict';
 
 import { Router } from "express";
-import { transaction } from "../middleware/transaction";
+import { transaction } from "../middlewares/transaction";
 
 // import sub-routers
 import users from "./users";

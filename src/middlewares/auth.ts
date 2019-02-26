@@ -3,8 +3,8 @@
 import * as admin from "firebase-admin";
 import * as Boom from "boom";
 import { NextFunction, Response } from "express";
-import { Scope } from "../enums/scope";
-import AuthRequest from "../interfaces/authRequest";
+import { Scope } from "../enums/Scope";
+import AuthRequest from "../interfaces/AuthRequest";
 
 class Auth {
     /**

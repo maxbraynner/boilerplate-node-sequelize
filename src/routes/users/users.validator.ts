@@ -2,7 +2,7 @@
 
 import * as Joi from 'joi';
 import * as validate from "express-validation";
-import { Scope } from '../../enums/scope';
+import { Scope } from '../../enums/Scope';
 
 export const userSchemas = {
     create: {

@@ -1,4 +1,4 @@
-import { Scope } from "../../enums/scope";
+import { Scope } from "../../enums/Scope";
 
 export default interface UserFilter {
 
