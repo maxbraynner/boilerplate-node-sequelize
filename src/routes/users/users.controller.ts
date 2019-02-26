@@ -3,7 +3,7 @@
 import * as admin from "firebase-admin";
 import { Request, Response } from "express";
 import * as Boom from "boom";
-import { AuthRequest } from "../../interfaces";
+import AuthRequest from "../../interfaces/authRequest";
 import { db as postgres } from "../../storage/postgres";
 import { UserModel } from "../../storage/postgres/models/user.model";
 import { Scope } from "../../enums/scope";

@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 import * as Boom from "boom";
 import { NextFunction, Response } from "express";
 import { Scope } from "../enums/scope";
-import { AuthRequest } from "../interfaces";
+import AuthRequest from "../interfaces/authRequest";
 
 class Auth {
     /**

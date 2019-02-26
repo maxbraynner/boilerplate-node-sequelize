@@ -2,7 +2,7 @@
 
 import { Router } from "express";
 
-import { AuthRequest } from "../../interfaces";
+import AuthRequest from "../../interfaces/authRequest";
 import { Scope } from "../../enums/scope";
 import UserValidator from "./users.validator"
 import UserController from "./users.controller"
