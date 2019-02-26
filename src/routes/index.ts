@@ -1,6 +1,7 @@
 'use strict';
 
 import { Router } from "express";
+import { transaction } from "../middleware/transaction";
 
 // import sub-routers
 import users from "./users";
@@ -16,6 +17,12 @@ const router = Router();
 router.get('/', (req, res)=>{
     res.sendStatus(200);
 });
+
+/**
+ * Transaction middleware
+ * rollback on error
+ */
+router.use(transaction);
 
 router.use('/users', users);
 

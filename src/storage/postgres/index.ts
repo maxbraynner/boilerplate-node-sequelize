@@ -2,7 +2,13 @@
 
 import * as Sequelize from "sequelize";
 import Models from "./models";
+import { namespace } from "./namespace";
 const Config = require("./config");
+
+/**
+ * Configure namespace
+ */
+Sequelize.useCLS(namespace as any);
 
 /**
  * db connection instance
