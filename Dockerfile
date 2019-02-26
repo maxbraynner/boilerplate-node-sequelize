@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:10-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -12,7 +12,11 @@ RUN NO_YARN_POSTINSTALL=1 yarn --silent
 # Bundle app source
 COPY . .
 
-ENV NODE_ENV=production
+ARG PORT=4000
+ARG NODE_ENV=production
+
+ENV NODE_ENV $NODE_ENV
+ENV PORT $PORT
 
 # build and prune devdependencies
 RUN yarn run build && yarn run prune && yarn cache clean --force
@@ -21,8 +25,6 @@ RUN yarn run build && yarn run prune && yarn cache clean --force
 HEALTHCHECK --interval=30s CMD node healthcheck.js
 
 # default to port 4000 for node, and 9229 for debug
-ARG PORT=4000
-ENV PORT $PORT
 EXPOSE $PORT 9229
 
 CMD yarn start

@@ -6,38 +6,30 @@ services:
     image: postgres
     environment:
       POSTGRES_PASSWORD: 123
+      POSTGRES_DB: application
     volumes: 
       - pgdata:/var/lib/postgresql/data
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=user@domain.com
-      - PGADMIN_DEFAULT_PASSWORD=postgres
-    ports:
-      - 9000:80
-    volumes: 
-      - pgadmin:/var/lib/pgadmin
 
   app:
     build:
       context: .
+      args: 
+        - NODE_ENV=development
+    image: node-application
     volumes: 
       - ./src:/usr/src/app/src
       - ./package.json:/usr/src/app/package.json
       - ./yarn.lock:/usr/src/app/yarn.lock.json
       - notused:/opt/app/node_modules
     environment: 
-      - NODE_ENV=development
-      - POSTGRES_URL=postgres://postgres:123@database:5432/dbname
+      - POSTGRES_URL=postgres://postgres:123@database:5432/application
     ports: 
       - 4000:4000
       - 9229:9229
-    command: yarn dev
+    command: yarn start:dev
     depends_on:
       - database
 
 volumes:
   pgdata:
-  pgadmin:
   notused:
