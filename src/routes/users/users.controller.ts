@@ -17,7 +17,7 @@ class UserController {
      * @param req
      * @param res
      */
-    async create(req: AuthRequest, res: Response) {
+    create = async (req: AuthRequest, res: Response) => {
         let user = req.body;
         try {
             const firebaseUser = await admin.auth().createUser({
@@ -47,29 +47,24 @@ class UserController {
             }
             throw error;
         }
-    }
+    };
 
-    async findById(req: AuthRequest, res: Response) {
-        const uid = req.params.id;
+    findById = async (req: AuthRequest, res: Response) => {
+        const { id } = req.params;
+        const { uid, scope } = req.credentials;
 
-        const user = await this.userModel.findById(uid, {
+        if (id != uid && !scope.admin) {
+            throw Boom.forbidden();
+        }
+
+        const user = await this.userModel.findById(id, {
             rejectOnEmpty: true
         });
 
         res.json(user);
-    }
+    };
 
-    async profile(req: AuthRequest, res: Response) {
-        const uid = req.credentials.uid;
-
-        const user = await this.userModel.findById(uid, {
-            rejectOnEmpty: true
-        });
-
-        res.json(user);
-    }
-
-    async find(req: AuthRequest, res: Response) {
+    find = async (req: AuthRequest, res: Response) => {
         const filter: UserFilter = req.query;
 
         const where = {};
@@ -94,9 +89,9 @@ class UserController {
         });
 
         res.json({ data: users });
-    }
+    };
 
-    async update(req: AuthRequest, res: Response) {
+    update = async (req: AuthRequest, res: Response) => {
         const uid = req.params.id;
         const newUser = req.body;
 
@@ -118,9 +113,9 @@ class UserController {
         user = await user.update(newUser);
 
         res.json({ data: user });
-    }
+    };
 
-    async delete(req: AuthRequest, res: Response) {
+    delete = async (req: AuthRequest, res: Response) => {
         const userId = req.params.id;
 
         const user = await this.userModel.find({
@@ -135,9 +130,9 @@ class UserController {
         await admin.auth().deleteUser(userId);
 
         res.json({ data: user });
-    }
+    };
 
-    async createAdmin(req: Request, res: Response) {
+    createAdmin = async (req: Request, res: Response) => {
         const uid = req.params.uid;
         const auth = req.headers.authorization;
 
@@ -151,9 +146,9 @@ class UserController {
             uid,
             scope: Scope.ADMIN
         });
-    }
+    };
 
-    async isEmailAvailable(req: Request, res: Response) {
+    isEmailAvailable = async (req: Request, res: Response) => {
         const email = req.params.email;
 
         let isAvailable: boolean;
@@ -177,11 +172,7 @@ class UserController {
         }
 
         res.status(isAvailable ? 200 : 409).json({ email });
-    }
+    };
 }
 
-function init(): UserController {
-    return new UserController(postgres.models.user);
-}
-
-export default init;
+export default new UserController(postgres.models.user);
