@@ -36,6 +36,7 @@
     "ext": "ts"
   },
   "dependencies": {
+    "@sentry/node": "^4.6.4",
     "boom": "^7.2.0",
     "cls-hooked": "^4.2.2",
     "cookie-parser": "~1.4.3",

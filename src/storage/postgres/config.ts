@@ -6,6 +6,7 @@ const operatorsAliases = require('./operators');
 const env = process.env.NODE_ENV || 'development';
 
 const defaultConfig = {
+    logging: false,
     operatorsAliases,
     dialect: 'postgres',
     seederStorage: 'sequelize',
@@ -24,11 +25,11 @@ const sequelizeConfig = {
     development: {
         ...defaultConfig,
         benchmark: true,
+        // logging: true,
         // sync: {alter: true},
     },
     test: {
         ...defaultConfig,
-        logging: false,
         dialect: 'sqlite',
         storage: './__tests__/database.sqlite'
     },
