@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Scope } from "../../enums/Scope";
-import UserValidator from "./users.validator";
+import userValidator from "./users.validator";
 import userController from "./users.controller";
 import Auth from "../../middlewares/auth";
 import { wraper } from "../../utils/requestWraper";
@@ -13,7 +13,7 @@ const router = Router();
 router.post(
     "/",
     Auth(Scope.ADMIN),
-    UserValidator().create(),
+    userValidator.create(),
     wraper(userController.create)
 );
 

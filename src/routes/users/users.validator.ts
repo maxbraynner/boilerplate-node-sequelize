@@ -43,8 +43,4 @@ class UserValidator {
 
 }
 
-function init() {
-    return new UserValidator();
-}
-
-export default init;
+export default new UserValidator();
