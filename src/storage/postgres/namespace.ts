@@ -7,6 +7,6 @@ const Sequelize = require('sequelize');
  * http://docs.sequelizejs.com/manual/tutorial/transactions.html#automatically-pass-transactions-to-all-queries
  */
 const namespace = cls.createNamespace("database");
-Sequelize.cls = namespace;
+Sequelize.useCLS(namespace as any);
 
-export { namespace };
+export { namespace, Sequelize };

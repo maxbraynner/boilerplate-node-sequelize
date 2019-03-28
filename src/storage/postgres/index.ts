@@ -1,7 +1,9 @@
-// configure namespace
-import  "./namespace";
+// import sequelize type
+import { Sequelize as SequelizeType } from "sequelize";
 
-import { Sequelize } from "sequelize";
+// import sequelize with namespace for transactions
+import { Sequelize } from "./namespace";
+
 import { User } from "./models";
 
 const Config = require("./config");
@@ -23,7 +25,7 @@ const db = {
     /**
      * Sequelize Static
      */
-    Sequelize,
+    Sequelize: Sequelize as SequelizeType,
 
     /**
      * readonly sequelize connection instance
