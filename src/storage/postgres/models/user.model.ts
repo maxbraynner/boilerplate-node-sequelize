@@ -1,67 +1,54 @@
-'use strict';
+"use strict";
 
-import * as Sequelize from 'sequelize'
+import { Model, DataTypes, Sequelize } from "sequelize";
 
-/**
- * fields of a single database row
- */
-export interface UserAttribute {
-    id: string
-    nome: string
-    email: string
-    status: string
+export class User extends Model {
+    id: string;
+    nome: string;
+    email: string;
+    status: string;
     scope: {
-        admin: boolean
-        user: boolean
+        admin: boolean;
+        user: boolean;
+    };
+
+    createdAt: Date;
+    updatedAt: Date;
+
+    public static define(sequelize: Sequelize) {
+        this.init(
+            {
+                id: {
+                    type: DataTypes.STRING,
+                    primaryKey: true,
+                    allowNull: false,
+                    autoIncrement: false
+                },
+                scope: {
+                    type: DataTypes.JSONB,
+                    allowNull: false
+                },
+                nome: {
+                    type: DataTypes.STRING,
+                    allowNull: false
+                },
+                email: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    unique: true
+                },
+                status: {
+                    type: DataTypes.STRING,
+                    allowNull: false
+                },
+                createdAt: DataTypes.DATE,
+                updatedAt: DataTypes.DATE
+            },
+            {
+                sequelize,
+                tableName: "user",
+                timestamps: true
+            }
+        );
     }
 }
-
-/**
- * a single database row
- */
-export interface UserInstance extends Sequelize.Instance<UserAttribute>, UserAttribute {
-}
-
-/**
- * a table in the database
- */
-export interface UserModel extends Sequelize.Model<UserInstance, UserAttribute> { }
-
-class User {
-    private model: Sequelize.Model<UserInstance, UserAttribute>;
-
-    public register(con: Sequelize.Sequelize) {
-        this.model = con.define<UserInstance, UserAttribute>('user', {
-            id: {
-                type: Sequelize.STRING,
-                primaryKey: true,
-                allowNull: false,
-                autoIncrement: false,
-            },
-            scope: {
-                type: Sequelize.JSONB,
-                allowNull: false,
-            },
-            nome: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            email: {
-                type: Sequelize.STRING,
-                allowNull: false,
-                unique: true,
-            },
-            status: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            createdAt: Sequelize.DATE,
-            updatedAt: Sequelize.DATE,
-        });
-        return this.model;
-    }
-
-    // public associate(models) {}
-}
-
-export default new User();

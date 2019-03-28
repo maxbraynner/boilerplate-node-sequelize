@@ -2,7 +2,7 @@ import * as request from "supertest";
 import { truncate } from "../utils/truncate";
 import { factory } from "../factories";
 import app from "../../src/app";
-import { UserInstance } from "../../src/storage/postgres/models/user.model";
+import { User } from "../../src/storage/postgres/models";
 
 describe("Users", () => {
     beforeAll(async () => {
@@ -18,7 +18,7 @@ describe("Users", () => {
     });
 
     it("GET User by ID", async () => {
-        const user = await factory.create("User") as UserInstance;
+        const user = await factory.create("User") as User;
 
         const response = await request(app)
             .get("/users/" + user.id)

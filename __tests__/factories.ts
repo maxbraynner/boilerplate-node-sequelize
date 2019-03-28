@@ -1,9 +1,9 @@
 import * as faker from "faker";
 import { Static } from "factory-girl";
-import { db } from "../src/storage/postgres";
+import { User } from "../src/storage/postgres/models";
 const factory = require("factory-girl").factory as Static;
 
-factory.define("User", db.models.user, {
+factory.define("User", User, {
     id: faker.random.uuid(),
     email: faker.internet.email(),
     nome: faker.name.findName(),

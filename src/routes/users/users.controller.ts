@@ -4,13 +4,12 @@ import * as admin from "firebase-admin";
 import { Request, Response } from "express";
 import * as Boom from "boom";
 import AuthRequest from "../../interfaces/AuthRequest";
-import { db as postgres } from "../../storage/postgres";
-import { UserModel } from "../../storage/postgres/models/user.model";
 import { Scope } from "../../enums/Scope";
 import UserFilter from "./users.filter";
+import { User } from "../../storage/postgres/models";
 
 class UserController {
-    constructor(private userModel: UserModel) {}
+    constructor() {}
 
     /**
      * Cria usuário no postgres e adiciona o scope no firebase auth
@@ -27,7 +26,7 @@ class UserController {
             });
 
             user.id = firebaseUser.uid;
-            user = await this.userModel.create(user);
+            user = await User.create(user);
             await admin
                 .auth()
                 .setCustomUserClaims(firebaseUser.uid, { scope: user.scope });
@@ -57,7 +56,7 @@ class UserController {
             throw Boom.forbidden();
         }
 
-        const user = await this.userModel.findById(id, {
+        const user = await User.findByPk(id, {
             rejectOnEmpty: true
         });
 
@@ -83,7 +82,7 @@ class UserController {
             where["scope"] = filter.scope;
         }
 
-        const users = await this.userModel.findAndCount({
+        const users = await User.findAndCountAll({
             where,
             order: [["updatedAt", "DESC"]]
         });
@@ -95,7 +94,7 @@ class UserController {
         const uid = req.params.id;
         const newUser = req.body;
 
-        let user = await this.userModel.findById(uid, {
+        let user = await User.findByPk(uid, {
             rejectOnEmpty: true
         });
 
@@ -118,7 +117,7 @@ class UserController {
     delete = async (req: AuthRequest, res: Response) => {
         const userId = req.params.id;
 
-        const user = await this.userModel.find({
+        const user = await User.findOne({
             where: {
                 id: userId
             },
@@ -175,4 +174,4 @@ class UserController {
     };
 }
 
-export default new UserController(postgres.models.user);
+export default new UserController();
