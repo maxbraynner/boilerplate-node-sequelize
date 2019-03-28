@@ -27,7 +27,8 @@ const sequelizeConfig = {
     test: {
         ...defaultConfig,
         dialect: 'sqlite',
-        storage: './__tests__/database.sqlite'
+        storage: './__tests__/database.sqlite',
+        url: null
     },
     production: {
         ...defaultConfig,

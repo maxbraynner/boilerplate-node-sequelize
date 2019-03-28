@@ -1,7 +1,7 @@
 import * as onFinished from "on-finished";
 import { Request, Response, NextFunction } from "express";
 import { namespace } from "../storage/postgres/namespace";
-import { db } from "../storage/postgres";
+import db from "../storage/postgres";
 
 export const transaction = async (
     req: Request,
@@ -12,7 +12,7 @@ export const transaction = async (
     namespace.bindEmitter(res);
     namespace.bind(next);
     namespace.run(async () => {
-        const transaction = await db.con.transaction();
+        const transaction = await db.connection.transaction();
         namespace.set("transaction", transaction);
         onFinished(res, (err, res) => {
             if (!err && res.statusCode < 400) {

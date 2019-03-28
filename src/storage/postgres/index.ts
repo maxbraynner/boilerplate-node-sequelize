@@ -1,57 +1,49 @@
-// import sequelize type
 import { Sequelize as SequelizeType } from "sequelize";
-
 // import sequelize with namespace for transactions
 import { Sequelize } from "./namespace";
-
 import { User } from "./models";
-
 const Config = require("./config");
 
-/**
- * db connection instance
- */
-const con =
-    process.env.NODE_ENV == "test"
-        ? new Sequelize("database", null, null, Config)
-        : new Sequelize(Config.url, Config);
+class DataBase {
+    private _connection;
 
-/**
- * models initiations
- */
-User.define(con);
-
-const db = {
-    /**
-     * Sequelize Static
-     */
-    Sequelize: Sequelize as SequelizeType,
-
-    /**
-     * readonly sequelize connection instance
-     */
-    get con() {
-        return con;
-    },
-
-    /**
-     * isReady performs a connection test and synchronizes the tables
-     */
-    async isReady() {
-        await con.authenticate();
-        // await con.sync({
-        //     alter: true,
-        // });
+    public constructor() {
+        this.connect();
+        this.defineModels();
+        this.associateModels();
     }
-};
 
-/**
- * make all the associations shine
- */
-// Object.keys(Models).forEach(modelName => {
-//     if (Models[modelName].associate) {
-//         Models[modelName].associate(db.models);
-//     }
-// });
+    public get connection(): SequelizeType {
+        return this._connection as SequelizeType;
+    }
 
-export { db };
+    public async isReady() {
+        await this._connection.authenticate();
+    }
+
+    private connect() {
+        const isTest = process.env.NODE_ENV == "test";
+        
+        if (isTest) {
+            // sqlite database
+            this._connection = new Sequelize("database", null, null, Config);
+        } else {
+            // postgres database
+            this._connection = new Sequelize(Config.url, Config);
+        }
+    }
+
+    /**
+     * models initiations
+     */
+    private defineModels() {
+        User.define(this._connection);
+    }
+
+    /**
+     * make all the associations shine
+     */
+    private associateModels() {}
+}
+
+export default new DataBase();
